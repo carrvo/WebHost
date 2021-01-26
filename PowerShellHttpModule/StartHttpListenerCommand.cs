@@ -5,7 +5,8 @@ using System.Management.Automation;
 namespace PowerShell.REST
 {
     /// <summary>
-    /// <para type="synopsis">Allows this instance to receive incoming requests.</para>
+    /// <para type="synopsis">Starts listening for client requests.</para>
+    /// <para type="description">Allows this instance to receive incoming requests.</para>
     /// <para type="link" uri="https://docs.microsoft.com/en-us/dotnet/api/system.net.httplistener.start?view=net-5.0#System_Net_HttpListener_Start">Citation.</para>
     /// <example>
     ///     <para>Submits Single Response</para>

@@ -5,7 +5,8 @@ using System.Management.Automation;
 namespace PowerShell.REST
 {
     /// <summary>
-    /// <para type="synopsis">Causes this instance to stop receiving new incoming requests and terminates processing of all ongoing requests.</para>
+    /// <para type="synopsis">Stops listening for client requests.</para>
+    /// <para type="description">Causes this instance to stop receiving new incoming requests and terminates processing of all ongoing requests.</para>
     /// <para type="link" uri="https://docs.microsoft.com/en-us/dotnet/api/system.net.httplistener.stop?view=net-5.0#System_Net_HttpListener_Stop">Citation.</para>
     /// <example>
     ///     <para>Submits Single Response</para>
