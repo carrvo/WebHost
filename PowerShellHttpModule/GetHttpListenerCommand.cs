@@ -10,6 +10,62 @@ namespace PowerShell.REST
     /// Gets all created <see cref="HttpListener"/> objects through this module's
     /// <see cref="Cmdlet"/>s, regardless of if they are still active or not.
     /// </para>
+    /// <example>
+    ///     <para>Submits Single Response</para>
+    ///     <code>
+    ///     Start-Job -Name "single response" -ScriptBlock {
+    ///         try {
+    ///             New-HttpListener $uri |
+    ///                 Start-HttpListener |
+    ///                 Wait-HttpRequest -Count 1 |
+    ///                 ForEach-Object {
+    ///                     $request = $_ | Receive-HttpRequest | ConvertFrom-Json
+    ///                     @{Message="Hello $($request.Name)"} |
+    ///                         ConvertTo-Json | Submit-HttpResponse -Request $_
+    ///             }
+    ///         } finally {
+    ///             Get-HttpListener | Stop-HttpListener
+    ///         }
+    ///     }
+    ///     </code>
+    /// </example>
+    /// <example>
+    ///     <para>Submits Indefinite Responses</para>
+    ///     <code>
+    ///     Start-Job -Name "indefinte responses" -ScriptBlock {
+    ///         try {
+    ///             New-HttpListener $uri |
+    ///                 Start-HttpListener |
+    ///                 Wait-HttpRequest -Infinity |
+    ///                 ForEach-Object {
+    ///                     $request = $_ | Receive-HttpRequest | ConvertFrom-Json
+    ///                     @{Message="Hello $($request.Name)"} |
+    ///                         ConvertToJson | Submit-HttpResponse -Request $_
+    ///                 }
+    ///         } finally {
+    ///             Get-HttpListener | Stop-HttpListener
+    ///         }
+    ///     }
+    ///     </code>
+    /// </example>
+    /// <example>
+    ///     <para>Denies Single Response</para>
+    ///     <code>
+    ///     Start-Job -Name "single response" -ScriptBlock {
+    ///         try {
+    ///             New-HttpListener $uri |
+    ///                 Start-HttpListener |
+    ///                 Wait-HttpRequest -Count 1 |
+    ///                 ForEach-Object {
+    ///                     $request = $_ | Receive-HttpRequest | ConvertFrom-Json
+    ///                     Deny-HttpResponse -Request $_
+    ///                 }
+    ///         } finally {
+    ///             Get-HttpListener | Stop-HttpListener
+    ///         }
+    ///     }
+    ///     </code>
+    /// </example>
     /// </summary>
     [Cmdlet(VerbsCommon.Get, "HttpListener")]
     [OutputType(typeof(HttpListener))]

@@ -7,6 +7,62 @@ namespace PowerShell.REST
     /// <summary>
     /// <para type="synopsis">Causes this instance to stop receiving new incoming requests and terminates processing of all ongoing requests.</para>
     /// <para type="link" uri="https://docs.microsoft.com/en-us/dotnet/api/system.net.httplistener.stop?view=net-5.0#System_Net_HttpListener_Stop">Citation.</para>
+    /// <example>
+    ///     <para>Submits Single Response</para>
+    ///     <code>
+    ///     Start-Job -Name "single response" -ScriptBlock {
+    ///         try {
+    ///             New-HttpListener $uri |
+    ///                 Start-HttpListener |
+    ///                 Wait-HttpRequest -Count 1 |
+    ///                 ForEach-Object {
+    ///                     $request = $_ | Receive-HttpRequest | ConvertFrom-Json
+    ///                     @{Message="Hello $($request.Name)"} |
+    ///                         ConvertTo-Json | Submit-HttpResponse -Request $_
+    ///             }
+    ///         } finally {
+    ///             Get-HttpListener | Stop-HttpListener
+    ///         }
+    ///     }
+    ///     </code>
+    /// </example>
+    /// <example>
+    ///     <para>Submits Indefinite Responses</para>
+    ///     <code>
+    ///     Start-Job -Name "indefinte responses" -ScriptBlock {
+    ///         try {
+    ///             New-HttpListener $uri |
+    ///                 Start-HttpListener |
+    ///                 Wait-HttpRequest -Infinity |
+    ///                 ForEach-Object {
+    ///                     $request = $_ | Receive-HttpRequest | ConvertFrom-Json
+    ///                     @{Message="Hello $($request.Name)"} |
+    ///                         ConvertToJson | Submit-HttpResponse -Request $_
+    ///                 }
+    ///         } finally {
+    ///             Get-HttpListener | Stop-HttpListener
+    ///         }
+    ///     }
+    ///     </code>
+    /// </example>
+    /// <example>
+    ///     <para>Denies Single Response</para>
+    ///     <code>
+    ///     Start-Job -Name "single response" -ScriptBlock {
+    ///         try {
+    ///             New-HttpListener $uri |
+    ///                 Start-HttpListener |
+    ///                 Wait-HttpRequest -Count 1 |
+    ///                 ForEach-Object {
+    ///                     $request = $_ | Receive-HttpRequest | ConvertFrom-Json
+    ///                     Deny-HttpResponse -Request $_
+    ///                 }
+    ///         } finally {
+    ///             Get-HttpListener | Stop-HttpListener
+    ///         }
+    ///     }
+    ///     </code>
+    /// </example>
     /// </summary>
     [Cmdlet(VerbsLifecycle.Stop, "HttpListener")]
     public sealed class StopHttpListenerCommand : Cmdlet

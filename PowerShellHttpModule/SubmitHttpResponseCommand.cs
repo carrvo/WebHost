@@ -9,6 +9,62 @@ namespace PowerShell.REST
     /// <para type="synopsis">Sends the response to the client and releases the resources held by this <see cref="HttpListenerResponse"/> instance.</para>
     /// <para type="link" uri="https://docs.microsoft.com/en-us/dotnet/api/system.net.httplistenerresponse.close?view=net-5.0#System_Net_HttpListenerResponse_Close">Citation.</para>
     /// <para type="description">This should *only* be called once.</para>
+    /// <example>
+    ///     <para>Submits Single Response</para>
+    ///     <code>
+    ///     Start-Job -Name "single response" -ScriptBlock {
+    ///         try {
+    ///             New-HttpListener $uri |
+    ///                 Start-HttpListener |
+    ///                 Wait-HttpRequest -Count 1 |
+    ///                 ForEach-Object {
+    ///                     $request = $_ | Receive-HttpRequest | ConvertFrom-Json
+    ///                     @{Message="Hello $($request.Name)"} |
+    ///                         ConvertTo-Json | Submit-HttpResponse -Request $_
+    ///             }
+    ///         } finally {
+    ///             Get-HttpListener | Stop-HttpListener
+    ///         }
+    ///     }
+    ///     </code>
+    /// </example>
+    /// <example>
+    ///     <para>Submits Indefinite Responses</para>
+    ///     <code>
+    ///     Start-Job -Name "indefinte responses" -ScriptBlock {
+    ///         try {
+    ///             New-HttpListener $uri |
+    ///                 Start-HttpListener |
+    ///                 Wait-HttpRequest -Infinity |
+    ///                 ForEach-Object {
+    ///                     $request = $_ | Receive-HttpRequest | ConvertFrom-Json
+    ///                     @{Message="Hello $($request.Name)"} |
+    ///                         ConvertToJson | Submit-HttpResponse -Request $_
+    ///                 }
+    ///         } finally {
+    ///             Get-HttpListener | Stop-HttpListener
+    ///         }
+    ///     }
+    ///     </code>
+    /// </example>
+    /// <example>
+    ///     <para>Denies Single Response</para>
+    ///     <code>
+    ///     Start-Job -Name "single response" -ScriptBlock {
+    ///         try {
+    ///             New-HttpListener $uri |
+    ///                 Start-HttpListener |
+    ///                 Wait-HttpRequest -Count 1 |
+    ///                 ForEach-Object {
+    ///                     $request = $_ | Receive-HttpRequest | ConvertFrom-Json
+    ///                     Deny-HttpResponse -Request $_
+    ///                 }
+    ///         } finally {
+    ///             Get-HttpListener | Stop-HttpListener
+    ///         }
+    ///     }
+    ///     </code>
+    /// </example>
     /// </summary>
     [Cmdlet(VerbsLifecycle.Submit, "HttpResponse")]
     public sealed class SubmitHttpResponseCommand : Cmdlet
