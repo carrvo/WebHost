@@ -1,38 +1,60 @@
-<#
-.NOTES
-Inspired by https://www.powershellgallery.com/packages/HttpListener/1.0.2/Content/HTTPListener.psm1
-#>
 Describe "Http Listener" {
+    BeforeAll {
+        Import-Module $PSScriptRoot\bin\netstandard2.0\PowerShellHttpModule.dll
+        $uri = 'http://localhost/'
+    }
     It "submits a single response" {
-        New-HttpListener "http://localhost/" |
-            Start-HttpListener |
-            Wait-HttpRequest -Count 1 |
-            ForEach-Object {
-                $request = $_ | Receive-HttpRequest | ConvertFrom-Json
-                @{Message="Hello $($request.Name)"} |
-                    ConvertTo-Json | Submit-HttpResponse -Request $_
-            } |
-            Stop-HttpListener
+        Start-Job -Name "single response" -ScriptBlock {
+            try {
+                New-HttpListener $uri |
+                    Start-HttpListener |
+                    Wait-HttpRequest -Count 1 |
+                    ForEach-Object {
+                        $request = $_ | Receive-HttpRequest | ConvertFrom-Json
+                        @{Message="Hello $($request.Name)"} |
+                            ConvertTo-Json | Submit-HttpResponse -Request $_
+                    }
+            } finally {
+                Get-HttpListener | Stop-HttpListener
+            }
+        }
+        Invoke-RestMethod -Method Get -Uri $uri -Body @{Name='test'} | Select-Object -ExpandProperty Message | Should -Be 'Hello test'
+        Get-Job -Name "single response" | Stop-Job | Remove-Job
     }
     It "submits indefinite responses" {
-        New-HttpListener "http://localhost/" |
-            Start-HttpListener |
-            Wait-HttpRequest -Infinity |
-            ForEach-Object {
-                $request = $_ | Receive-HttpRequest | ConvertFrom-Json
-                @{Message="Hello $($request.Name)"} |
-                    ConvertTo-Json | Submit-HttpResponse -Request $_
-            } |
-            Stop-HttpListener
+        Start-Job -Name "indefinte responses" -ScriptBlock {
+            try {
+                New-HttpListener $uri |
+                    Start-HttpListener |
+                    Wait-HttpRequest -Infinity |
+                    ForEach-Object {
+                        $request = $_ | Receive-HttpRequest | ConvertFrom-Json
+                        @{Message="Hello $($request.Name)"} |
+                            ConvertTo-Json | Submit-HttpResponse -Request $_
+                    }
+            } finally {
+                Get-HttpListener | Stop-HttpListener
+            }
+        }
+        Invoke-RestMethod -Method Get -Uri $uri -Body @{Name='test'} | Select-Object -ExpandProperty Message | Should -Be 'Hello test'
+        Invoke-RestMethod -Method Get -Uri $uri -Body @{Name='test'} | Select-Object -ExpandProperty Message | Should -Be 'Hello test'
+        Get-Job -Name "indefinite responses" | Stop-Job | Remove-Job
     }
     It "denies a single response" {
-        New-HttpListener "http://localhost/" |
-            Start-HttpListener |
-            Wait-HttpRequest -Count 1 |
-            ForEach-Object {
-                $request = $_ | Receive-HttpRequest | ConvertFrom-Json
-                Deny-HttpResponse -Request $_
-            } |
-            Stop-HttpListener
+        Start-Job -Name "single response" -ScriptBlock {
+            try {
+                New-HttpListener $uri |
+                    Start-HttpListener |
+                    Wait-HttpRequest -Count 1 |
+                    ForEach-Object {
+                        $request = $_ | Receive-HttpRequest | ConvertFrom-Json
+                        Deny-HttpResponse -Request $_
+                    }
+            } finally {
+                Get-HttpListener | Stop-HttpListener
+            }
+        }
+        { Invoke-RestMethod -Method Get -Uri $uri -Body @{Name='test'} } | Should -Throw
+        Get-Job -Name "single response" | Stop-Job | Remove-Job
     }
 }
