@@ -9,6 +9,62 @@ namespace PowerShell.REST
     /// <summary>
     /// <para type="synopsis">Creates a new <see cref="HttpListener"/> object.</para>
     /// <para type="description"><see cref="HttpListener"/> objects are used to listen for client requests.</para>
+    /// <example>
+    ///     <para>Submits Single Response</para>
+    ///     <code>
+    ///     Start-Job -Name "single response" -ScriptBlock {
+    ///         try {
+    ///             New-HttpListener $uri |
+    ///                 Start-HttpListener |
+    ///                 Wait-HttpRequest -Count 1 |
+    ///                 ForEach-Object {
+    ///                     $request = $_ | Receive-HttpRequest | ConvertFrom-Json
+    ///                     @{Message="Hello $($request.Name)"} |
+    ///                         ConvertTo-Json | Submit-HttpResponse -Request $_
+    ///             }
+    ///         } finally {
+    ///             Get-HttpListener | Stop-HttpListener
+    ///         }
+    ///     }
+    ///     </code>
+    /// </example>
+    /// <example>
+    ///     <para>Submits Indefinite Responses</para>
+    ///     <code>
+    ///     Start-Job -Name "indefinte responses" -ScriptBlock {
+    ///         try {
+    ///             New-HttpListener $uri |
+    ///                 Start-HttpListener |
+    ///                 Wait-HttpRequest -Infinity |
+    ///                 ForEach-Object {
+    ///                     $request = $_ | Receive-HttpRequest | ConvertFrom-Json
+    ///                     @{Message="Hello $($request.Name)"} |
+    ///                         ConvertToJson | Submit-HttpResponse -Request $_
+    ///                 }
+    ///         } finally {
+    ///             Get-HttpListener | Stop-HttpListener
+    ///         }
+    ///     }
+    ///     </code>
+    /// </example>
+    /// <example>
+    ///     <para>Denies Single Response</para>
+    ///     <code>
+    ///     Start-Job -Name "single response" -ScriptBlock {
+    ///         try {
+    ///             New-HttpListener $uri |
+    ///                 Start-HttpListener |
+    ///                 Wait-HttpRequest -Count 1 |
+    ///                 ForEach-Object {
+    ///                     $request = $_ | Receive-HttpRequest | ConvertFrom-Json
+    ///                     Deny-HttpResponse -Request $_
+    ///                 }
+    ///         } finally {
+    ///             Get-HttpListener | Stop-HttpListener
+    ///         }
+    ///     }
+    ///     </code>
+    /// </example>
     /// </summary>
     [Cmdlet(VerbsCommon.New, "HttpListener")]
     [OutputType(typeof(HttpListener))]
@@ -18,62 +74,6 @@ namespace PowerShell.REST
         /// <para type="description">URI prefixes that the <see cref="HttpListener"/> will listen for.</para>
         /// <para type="description">This specifies a root URI whereby the <see cref="HttpListener"/> will respond to any URI under its path.</para>
         /// <para type="link" uri="https://docs.microsoft.com/en-us/dotnet/api/system.net.httplistener.prefixes?view=net-5.0#System_Net_HttpListener_Prefixes">Citation.</para>
-        /// <example>
-        ///     <para>Submits Single Response</para>
-        ///     <code>
-        ///     Start-Job -Name "single response" -ScriptBlock {
-        ///         try {
-        ///             New-HttpListener $uri |
-        ///                 Start-HttpListener |
-        ///                 Wait-HttpRequest -Count 1 |
-        ///                 ForEach-Object {
-        ///                     $request = $_ | Receive-HttpRequest | ConvertFrom-Json
-        ///                     @{Message="Hello $($request.Name)"} |
-        ///                         ConvertTo-Json | Submit-HttpResponse -Request $_
-        ///             }
-        ///         } finally {
-        ///             Get-HttpListener | Stop-HttpListener
-        ///         }
-        ///     }
-        ///     </code>
-        /// </example>
-        /// <example>
-        ///     <para>Submits Indefinite Responses</para>
-        ///     <code>
-        ///     Start-Job -Name "indefinte responses" -ScriptBlock {
-        ///         try {
-        ///             New-HttpListener $uri |
-        ///                 Start-HttpListener |
-        ///                 Wait-HttpRequest -Infinity |
-        ///                 ForEach-Object {
-        ///                     $request = $_ | Receive-HttpRequest | ConvertFrom-Json
-        ///                     @{Message="Hello $($request.Name)"} |
-        ///                         ConvertToJson | Submit-HttpResponse -Request $_
-        ///                 }
-        ///         } finally {
-        ///             Get-HttpListener | Stop-HttpListener
-        ///         }
-        ///     }
-        ///     </code>
-        /// </example>
-        /// <example>
-        ///     <para>Denies Single Response</para>
-        ///     <code>
-        ///     Start-Job -Name "single response" -ScriptBlock {
-        ///         try {
-        ///             New-HttpListener $uri |
-        ///                 Start-HttpListener |
-        ///                 Wait-HttpRequest -Count 1 |
-        ///                 ForEach-Object {
-        ///                     $request = $_ | Receive-HttpRequest | ConvertFrom-Json
-        ///                     Deny-HttpResponse -Request $_
-        ///                 }
-        ///         } finally {
-        ///             Get-HttpListener | Stop-HttpListener
-        ///         }
-        ///     }
-        ///     </code>
-        /// </example>
         /// </summary>
         [Parameter(Mandatory = true, ValueFromPipeline = true)]
         public String UriPrefix { get; set; }
