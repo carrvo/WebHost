@@ -1,14 +1,16 @@
-using System.Collections.Generics;
+using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Management.Automation;
+using System.Linq;
 
 namespace PowerShell.REST
 {
     [Cmdlet(VerbsCommon.New, "HttpListener")]
-    [OutputType(HttpListener)]
+    [OutputType(typeof(HttpListener))]
     public sealed class NewHttpListenerCommand : Cmdlet
     {
-        [Parameter(Mandatory, ValueFromPipeline)]
+        [Parameter(Mandatory = true, ValueFromPipeline = true)]
         public String UriPrefix { get; set; }
 
         [Parameter()]
@@ -27,7 +29,7 @@ namespace PowerShell.REST
                     null));
             }
             Output = new HttpListener();
-            if (0 != AuthenticationSchemes.Count)
+            if (0 != AuthenticationSchemes.Count())
             {
                 foreach (var scheme in AuthenticationSchemes)
                 {
@@ -48,7 +50,7 @@ namespace PowerShell.REST
         protected override void EndProcessing()
         {
             GetHttpListenerCommand.Listeners.Add(Output);
-            WriteOutput(Output);
+            WriteObject(Output);
         }
     }
 }

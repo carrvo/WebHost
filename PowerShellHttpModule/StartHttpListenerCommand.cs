@@ -1,14 +1,14 @@
-using System.Collections.Generics;
+using System.Collections.Generic;
 using System.Net;
 using System.Management.Automation;
 
 namespace PowerShell.REST
 {
     [Cmdlet(VerbsLifecycle.Start, "HttpListener")]
-    [OutputType(HttpListener)]
+    [OutputType(typeof(HttpListener))]
     public sealed class StartHttpListenerCommand : Cmdlet
     {
-        [Parameter(Mandatory, ValueFromPipeline)]
+        [Parameter(Mandatory = true, ValueFromPipeline = true)]
         public HttpListener Listener { get; set; }
 
         protected override void ProcessRecord()
@@ -17,7 +17,7 @@ namespace PowerShell.REST
             {
                 Listener.Start();
             }
-            WriteOutput(Listener);
+            WriteObject(Listener);
         }
     }
 }

@@ -1,23 +1,23 @@
 using System;
-using System.Collections.Generics;
+using System.Collections.Generic;
 using System.Net;
 using System.Management.Automation;
 
 namespace PowerShell.REST
 {
     [Cmdlet(VerbsLifecycle.Wait, "HttpRequest")]
-    [OutputType(HttpListenerContext)]
+    [OutputType(typeof(HttpListenerContext))]
     public sealed class WaitHttpRequestCommand : Cmdlet
     {
-        [Parameter(Mandatory, ValueFromPipeline, ParameterSetName = "Infinite")]
-        [Parameter(Mandatory, ValueFromPipeline, ParameterSetName = "Limited")]
+        [Parameter(Mandatory = true, ValueFromPipeline = true, ParameterSetName = "Infinite")]
+        [Parameter(Mandatory = true, ValueFromPipeline = true, ParameterSetName = "Limited")]
         public HttpListener Listener { get; set; }
 
         [Parameter(ParameterSetName = "Limited")]
         [Alias("Count")]
         public Int64 NumberOfRequests { get; set; } = 1;
 
-        [Parameter(Mandatory, ParameterSetName = "Infinite")]
+        [Parameter(Mandatory = true, ParameterSetName = "Infinite")]
         [Alias("Infinity")]
         public SwitchParameter InfiniteRequests { get; set; }
 
@@ -28,7 +28,7 @@ namespace PowerShell.REST
                 HttpListenerContext context = listener.GetContext();
                 if (context.Request.IsAuthenticated)
                 {
-                    WriteOutput(context);
+                    WriteObject(context);
                 }
                 else
                 {
@@ -48,7 +48,7 @@ namespace PowerShell.REST
             else
             {
                 ThrowTerminatingError(new ErrorRecord(
-                    new WebException()
+                    new WebException(),
                     "Listener Not Active",
                     ErrorCategory.ConnectionError,
                     listener));
@@ -57,8 +57,8 @@ namespace PowerShell.REST
 
         protected override void ProcessRecord()
         {
-            Func<Boolean> nextRequest = InfiniteRequests ?
-                () => true,
+            Func<Boolean> nextRequest = InfiniteRequests.IsPresent ?
+                () => true :
                 () => 0 == NumberOfRequests--;
             while(nextRequest())
             {

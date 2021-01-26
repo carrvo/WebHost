@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Generics;
+using System.Collections.Generic;
 using System.Net;
 using System.IO;
 using System.Text;
@@ -8,10 +8,10 @@ using System.Management.Automation;
 namespace PowerShell.REST
 {
     [Cmdlet(VerbsCommunications.Receive, "HttpResponse")]
-    [OutputType(String)]
+    [OutputType(typeof(String))]
     public sealed class ReceiveHttpResponseCommand : Cmdlet
     {
-        [Parameter(Mandatory, ValueFromPipeline)]
+        [Parameter(Mandatory = true, ValueFromPipeline = true)]
         [Alias("Request")]
         public HttpListenerContext Context { get; set; }
 
@@ -27,7 +27,7 @@ namespace PowerShell.REST
                     WriteWarning(new WarningRecord("No ContentType", Context));
                 }
                 String request = reader.ReadToEnd();
-                WriteOutput(request);
+                WriteObject(request);
                 Context.Request.InputStream.Close();
                 reader.Close();
             }
@@ -38,7 +38,7 @@ namespace PowerShell.REST
                     "No Request Body",
                     ErrorCategory.InvalidData,
                     Context));
-                WriteOutput(null);
+                WriteObject(null);
             }
         }
     }

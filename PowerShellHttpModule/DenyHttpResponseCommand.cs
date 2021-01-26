@@ -1,13 +1,13 @@
-using System.Collections.Generics;
+using System.Collections.Generic;
 using System.Net;
 using System.Management.Automation;
 
 namespace PowerShell.REST
 {
-    [Cmdlet(VerbsLifecycle.Submit, "HttpResponse")]
-    public sealed class SubmitHttpResponseCommand : Cmdlet
+    [Cmdlet(VerbsLifecycle.Deny, "HttpResponse")]
+    public sealed class DenyHttpResponseCommand : Cmdlet
     {
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory = true)]
         [Alias("Request")]
         public HttpListenerContext Context { get; set; }
 

@@ -1,21 +1,21 @@
-using System.Collections.Generics;
+using System.Collections.Generic;
 using System.Net;
 using System.Management.Automation;
 
 namespace PowerShell.REST
 {
     [Cmdlet(VerbsCommon.Get, "HttpListener")]
-    [OutputType(HttpListener)]
+    [OutputType(typeof(HttpListener))]
     public sealed class GetHttpListenerCommand : Cmdlet
     {
-        internal static IEnumerable<HttpListener> Listeners { get; }
+        internal static IList<HttpListener> Listeners { get; }
             = new List<HttpListener>();
 
-        public override BeginProcessing()
+        protected override void BeginProcessing()
         {
             foreach (var listener in Listeners)
             {
-                WriteOutput(listener);
+                WriteObject(listener);
             }
         }
     }

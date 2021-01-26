@@ -1,4 +1,5 @@
-using System.Collections.Generics;
+using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Management.Automation;
 
@@ -7,10 +8,10 @@ namespace PowerShell.REST
     [Cmdlet(VerbsLifecycle.Submit, "HttpResponse")]
     public sealed class SubmitHttpResponseCommand : Cmdlet
     {
-        [Parameter(Mandatory, ValueFromPipeline)]
+        [Parameter(Mandatory = true, ValueFromPipeline = true)]
         public String Json { get; set; }
 
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory = true)]
         [Alias("Request")]
         public HttpListenerContext Context { get; set; }
 
