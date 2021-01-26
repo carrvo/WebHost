@@ -24,7 +24,7 @@ namespace PowerShell.REST
                 StreamReader reader = new StreamReader(Context.Request.InputStream, encoding);
                 if (Context.Request.ContentType == null)
                 {
-                    WriteWarning(new WarningRecord("No ContentType", Context));
+                    WriteWarning("No ContentType");
                 }
                 String request = reader.ReadToEnd();
                 WriteObject(request);

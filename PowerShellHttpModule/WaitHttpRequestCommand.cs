@@ -21,6 +21,8 @@ namespace PowerShell.REST
         [Alias("Infinity")]
         public SwitchParameter InfiniteRequests { get; set; }
 
+        private Func<Boolean> NextRequest { get; set; }
+
         private void ListenForSingleRequest(HttpListener listener)
         {
             if (listener.IsListening)
@@ -55,12 +57,21 @@ namespace PowerShell.REST
             }
         }
 
+        protected override void BeginProcessing()
+        {
+            if (InfiniteRequests.IsPresent)
+            {
+                NextRequest = () => true;
+            }
+            else
+            {
+                NextRequest = () => 0 == NumberOfRequests--;
+            }
+        }
+
         protected override void ProcessRecord()
         {
-            Func<Boolean> nextRequest = InfiniteRequests.IsPresent ?
-                () => true :
-                () => 0 == NumberOfRequests--;
-            while(nextRequest())
+            while(NextRequest())
             {
                 ListenForSingleRequest(Listener);
             }
