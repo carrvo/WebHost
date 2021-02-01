@@ -76,10 +76,13 @@ namespace PowerShell.REST
 
         protected override void ProcessRecord()
         {
+            WriteVerbose($"{nameof(StopHttpListenerCommand)} - {nameof(ProcessRecord)} - checking {nameof(HttpListener.IsListening)}");
             if (Listener.IsListening)
             {
+                WriteVerbose($"{nameof(StopHttpListenerCommand)} - {nameof(ProcessRecord)} - {nameof(HttpListener.Stop)}");
                 Listener.Stop();
             }
+            WriteVerbose($"{nameof(StopHttpListenerCommand)} - {nameof(ProcessRecord)} - end");
         }
     }
 }

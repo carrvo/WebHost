@@ -96,11 +96,15 @@ namespace PowerShell.REST
 
         private void ListenForSingleRequest(HttpListener listener)
         {
+            WriteVerbose($"{nameof(WaitHttpRequestCommand)} - {nameof(ProcessRecord)} - checking {nameof(HttpListener.IsListening)}");
             if (listener.IsListening)
             {
+                WriteVerbose($"{nameof(WaitHttpRequestCommand)} - {nameof(ProcessRecord)} - waiting for request");
                 HttpListenerContext context = listener.GetContext();
+                WriteVerbose($"{nameof(WaitHttpRequestCommand)} - {nameof(ProcessRecord)} - checking {nameof(HttpListenerRequest.IsAuthenticated)}");
                 if (context.Request.IsAuthenticated)
                 {
+                    WriteVerbose($"{nameof(WaitHttpRequestCommand)} - {nameof(ProcessRecord)} - output");
                     WriteObject(context);
                 }
                 else
@@ -130,22 +134,27 @@ namespace PowerShell.REST
 
         protected override void BeginProcessing()
         {
+            WriteVerbose($"{nameof(WaitHttpRequestCommand)} - {nameof(BeginProcessing)} - determine {nameof(NumberOfRequests)}");
             if (InfiniteRequests.IsPresent)
             {
                 NextRequest = () => true;
             }
             else
             {
-                NextRequest = () => 0 == NumberOfRequests--;
+                NextRequest = () => 0 == --NumberOfRequests;
             }
+            WriteVerbose($"{nameof(WaitHttpRequestCommand)} - {nameof(BeginProcessing)} - end");
         }
 
         protected override void ProcessRecord()
         {
-            while(NextRequest())
+            WriteVerbose($"{nameof(WaitHttpRequestCommand)} - {nameof(ProcessRecord)} - while {nameof(NextRequest)}");
+            while (NextRequest())
             {
+                WriteVerbose($"{nameof(WaitHttpRequestCommand)} - {nameof(ProcessRecord)} - {nameof(NextRequest)}");
                 ListenForSingleRequest(Listener);
             }
+            WriteVerbose($"{nameof(WaitHttpRequestCommand)} - {nameof(ProcessRecord)} - end");
         }
     }
 }

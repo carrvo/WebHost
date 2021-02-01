@@ -6,7 +6,8 @@ Describe "Http Listener" {
     It "submits a single response" {
         Start-Job -Name "single response" -ScriptBlock {
             try {
-                New-HttpListener $uri |
+                $uri |
+                New-HttpListener |
                     Start-HttpListener |
                     Wait-HttpRequest -Count 1 |
                     ForEach-Object {
@@ -24,7 +25,8 @@ Describe "Http Listener" {
     It "submits indefinite responses" {
         Start-Job -Name "indefinte responses" -ScriptBlock {
             try {
-                New-HttpListener $uri |
+                $uri |
+                New-HttpListener |
                     Start-HttpListener |
                     Wait-HttpRequest -Infinity |
                     ForEach-Object {
@@ -43,7 +45,8 @@ Describe "Http Listener" {
     It "denies a single response" {
         Start-Job -Name "single response" -ScriptBlock {
             try {
-                New-HttpListener $uri |
+                $uri |
+                New-HttpListener |
                     Start-HttpListener |
                     Wait-HttpRequest -Count 1 |
                     ForEach-Object {

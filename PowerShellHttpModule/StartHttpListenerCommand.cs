@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System;
 using System.Net;
 using System.Management.Automation;
 
@@ -77,11 +77,26 @@ namespace PowerShell.REST
 
         protected override void ProcessRecord()
         {
+            WriteVerbose($"{nameof(StartHttpListenerCommand)} - {nameof(ProcessRecord)} - checking {nameof(HttpListener.IsListening)}");
             if (!Listener.IsListening)
             {
-                Listener.Start();
+                try
+                {
+                    WriteVerbose($"{nameof(StartHttpListenerCommand)} - {nameof(ProcessRecord)} - {nameof(HttpListener.Start)}");
+                    Listener.Start();
+                }
+                catch (Exception ex)
+                {
+                    ThrowTerminatingError(new ErrorRecord(
+                        ex,
+                        $"Failed to start a {nameof(HttpListener)}",
+                        ErrorCategory.AuthenticationError,
+                        Listener));
+                }
             }
+            WriteVerbose($"{nameof(StartHttpListenerCommand)} - {nameof(ProcessRecord)} - pass along");
             WriteObject(Listener);
+            WriteVerbose($"{nameof(StartHttpListenerCommand)} - {nameof(ProcessRecord)} - end");
         }
     }
 }

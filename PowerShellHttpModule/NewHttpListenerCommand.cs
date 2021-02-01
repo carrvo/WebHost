@@ -83,43 +83,65 @@ namespace PowerShell.REST
         /// <para type="link" uri="https://docs.microsoft.com/en-us/dotnet/api/system.net.httplistener.authenticationschemes?view=net-5.0#System_Net_HttpListener_AuthenticationSchemes">Citation.</para>
         /// </summary>
         [Parameter()]
-        public IEnumerable<AuthenticationSchemes> AuthenticationSchemes { get; set; }
+        public AuthenticationSchemes[] AuthenticationSchemes { get; set; }
 
         private HttpListener Output { get; set; }
 
         protected override void BeginProcessing()
         {
+            WriteVerbose($"{nameof(NewHttpListenerCommand)} - {nameof(BeginProcessing)} - checking for {nameof(HttpListener.IsSupported)}");
             if (!HttpListener.IsSupported)
             {
                 ThrowTerminatingError(new ErrorRecord(
                     new Exception(),
                     "OS Not Supported",
-                    ErrorCategory.NotSpecified,
+                    ErrorCategory.NotEnabled,
                     null));
             }
-            Output = new HttpListener();
-            if (0 != AuthenticationSchemes.Count())
+            try
             {
+                WriteVerbose($"{nameof(NewHttpListenerCommand)} - {nameof(BeginProcessing)} - instantiating {nameof(HttpListener)}");
+                Output = new HttpListener();
+            }
+            catch (Exception ex)
+            {
+                ThrowTerminatingError(new ErrorRecord(
+                    ex,
+                    $"Failed to instantiate a {nameof(HttpListener)}",
+                    ErrorCategory.NotSpecified,
+                    Output));
+            }
+            WriteVerbose($"{nameof(NewHttpListenerCommand)} - {nameof(BeginProcessing)} - checking {nameof(AuthenticationSchemes)}");
+            if (AuthenticationSchemes != null && 0 != AuthenticationSchemes.Count())
+            {
+                WriteVerbose($"{nameof(NewHttpListenerCommand)} - {nameof(BeginProcessing)} - adding {nameof(HttpListener.AuthenticationSchemes)}");
                 foreach (var scheme in AuthenticationSchemes)
                 {
                     Output.AuthenticationSchemes = Output.AuthenticationSchemes | scheme;
                 }
             }
+            WriteVerbose($"{nameof(NewHttpListenerCommand)} - {nameof(BeginProcessing)} - end");
         }
 
         protected override void ProcessRecord()
         {
+            WriteVerbose($"{nameof(NewHttpListenerCommand)} - {nameof(ProcessRecord)} - checking {nameof(UriPrefix)}");
             if (!UriPrefix.EndsWith("/"))
             {
                 UriPrefix += "/";
             }
+            WriteVerbose($"{nameof(NewHttpListenerCommand)} - {nameof(ProcessRecord)} - adding {nameof(HttpListener.Prefixes)}");
             Output.Prefixes.Add(UriPrefix);
+            WriteVerbose($"{nameof(NewHttpListenerCommand)} - {nameof(ProcessRecord)} - end");
         }
 
         protected override void EndProcessing()
         {
+            WriteVerbose($"{nameof(NewHttpListenerCommand)} - {nameof(EndProcessing)} - adding reference");
             GetHttpListenerCommand.Listeners.Add(Output);
+            WriteVerbose($"{nameof(NewHttpListenerCommand)} - {nameof(EndProcessing)} - output");
             WriteObject(Output);
+            WriteVerbose($"{nameof(NewHttpListenerCommand)} - {nameof(EndProcessing)} - end");
         }
     }
 }
