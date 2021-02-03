@@ -1,13 +1,18 @@
 Describe "Http Listener" {
     BeforeAll {
-        Import-Module $PSScriptRoot\bin\netstandard2.0\PowerShellHttpModule.dll
-        $uri = 'http://localhost/'
+        $uri = 'http://localhost/api'
+        $cred = Get-Credential -Message "For PowerShell-REST" -UserName "$ENV:COMPUTERNAME\$ENV:USERNAME" -Title "PowerShell-REST"
     }
     It "submits a single response" {
         Start-Job -Name "single response" -ScriptBlock {
+            Param(
+                $PSScriptRoot,
+                $uri
+            )
+            Import-Module $PSScriptRoot\bin\netstandard2.0\PowerShellHttpModule.dll
             try {
-                $uri |
-                New-HttpListener |
+                "$uri/single-accept" |
+                New-HttpListener -AuthenticationSchemes Basic |
                     Start-HttpListener |
                     Wait-HttpRequest -Count 1 |
                     ForEach-Object {
@@ -18,15 +23,22 @@ Describe "Http Listener" {
             } finally {
                 Get-HttpListener | Stop-HttpListener
             }
-        }
-        Invoke-RestMethod -Method Get -Uri $uri -Body @{Name='test'} | Select-Object -ExpandProperty Message | Should -Be 'Hello test'
+        } -ArgumentList $PSScriptRoot,$uri
+        Invoke-RestMethod -Method Post -Uri "$uri/single-accept" -Body $(@{Name='test'} | ConvertTo-Json) -ContentType 'application/json' -Authentication Basic -Credential $cred -AllowUnencryptedAuthentication |
+            Select-Object -ExpandProperty Message |
+            Should Be 'Hello test'
         Get-Job -Name "single response" | Stop-Job | Remove-Job
     }
     It "submits indefinite responses" {
         Start-Job -Name "indefinte responses" -ScriptBlock {
+            Param(
+                $PSScriptRoot,
+                $uri
+            )
+            Import-Module $PSScriptRoot\bin\netstandard2.0\PowerShellHttpModule.dll
             try {
-                $uri |
-                New-HttpListener |
+                "$uri/indefinite-accept" |
+                New-HttpListener -AuthenticationSchemes Basic |
                     Start-HttpListener |
                     Wait-HttpRequest -Infinity |
                     ForEach-Object {
@@ -37,16 +49,25 @@ Describe "Http Listener" {
             } finally {
                 Get-HttpListener | Stop-HttpListener
             }
-        }
-        Invoke-RestMethod -Method Get -Uri $uri -Body @{Name='test'} | Select-Object -ExpandProperty Message | Should -Be 'Hello test'
-        Invoke-RestMethod -Method Get -Uri $uri -Body @{Name='test'} | Select-Object -ExpandProperty Message | Should -Be 'Hello test'
+        } -ArgumentList $PSScriptRoot,$uri
+        Invoke-RestMethod -Method Post -Uri "$uri/indefinite-accept" -Body $(@{Name='test'} | ConvertTo-Json) -ContentType 'application/json' -Authentication Basic -Credential $cred -AllowUnencryptedAuthentication |
+            Select-Object -ExpandProperty Message |
+            Should Be 'Hello test'
+        Invoke-RestMethod -Method Post -Uri "$uri/indefinite-accept" -Body $(@{Name='test'} | ConvertTo-Json) -ContentType 'application/json' -Authentication Basic -Credential $cred -AllowUnencryptedAuthentication |
+            Select-Object -ExpandProperty Message |
+            Should Be 'Hello test'
         Get-Job -Name "indefinite responses" | Stop-Job | Remove-Job
     }
     It "denies a single response" {
         Start-Job -Name "single response" -ScriptBlock {
+            Param(
+                $PSScriptRoot,
+                $uri
+            )
+            Import-Module $PSScriptRoot\bin\netstandard2.0\PowerShellHttpModule.dll
             try {
-                $uri |
-                New-HttpListener |
+                "$uri/single-deny" |
+                New-HttpListener -AuthenticationSchemes Basic |
                     Start-HttpListener |
                     Wait-HttpRequest -Count 1 |
                     ForEach-Object {
@@ -56,8 +77,9 @@ Describe "Http Listener" {
             } finally {
                 Get-HttpListener | Stop-HttpListener
             }
-        }
-        { Invoke-RestMethod -Method Get -Uri $uri -Body @{Name='test'} } | Should -Throw
+        } -ArgumentList $PSScriptRoot,$uri
+        { Invoke-RestMethod -Method Post -Uri "$uri/single-deny" -Body $(@{Name='test'} | ConvertTo-Json) -ContentType 'application/json' -Authentication Basic -Credential $cred -AllowUnencryptedAuthentication } |
+            Should Throw
         Get-Job -Name "single response" | Stop-Job | Remove-Job
     }
 }
