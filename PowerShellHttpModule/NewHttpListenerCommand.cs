@@ -115,10 +115,12 @@ namespace PowerShell.REST
             if (AuthenticationSchemes != null && 0 != AuthenticationSchemes.Count())
             {
                 WriteVerbose($"{nameof(NewHttpListenerCommand)} - {nameof(BeginProcessing)} - adding {nameof(HttpListener.AuthenticationSchemes)}");
+                Int32 schemes = 0;
                 foreach (var scheme in AuthenticationSchemes)
                 {
-                    Output.AuthenticationSchemes = Output.AuthenticationSchemes | scheme;
+                    schemes |= (Int32)scheme;
                 }
+                Output.AuthenticationSchemes = (AuthenticationSchemes)schemes;
             }
             WriteVerbose($"{nameof(NewHttpListenerCommand)} - {nameof(BeginProcessing)} - end");
         }
