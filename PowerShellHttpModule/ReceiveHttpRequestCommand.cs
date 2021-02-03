@@ -70,9 +70,9 @@ namespace PowerShell.REST
     ///     </code>
     /// </example>
     /// </summary>
-    [Cmdlet(VerbsCommunications.Receive, "HttpResponse")]
+    [Cmdlet(VerbsCommunications.Receive, "HttpRequest")]
     [OutputType(typeof(String))]
-    public sealed class ReceiveHttpResponseCommand : Cmdlet
+    public sealed class ReceiveHttpRequestCommand : Cmdlet
     {
         /// <summary>
         /// <para type="description">The <see cref="HttpListenerContext"/> that corresponds to the client request.</para>
@@ -83,24 +83,33 @@ namespace PowerShell.REST
 
         protected override void ProcessRecord()
         {
-            if (Context.Request.HasEntityBody)
+            WriteVerbose($"{nameof(ReceiveHttpRequestCommand)} - {nameof(ProcessRecord)} - checking {nameof(HttpListenerRequest.HasEntityBody)}");
+            if (Context.Request != null && Context.Request.HasEntityBody)
             {
+                WriteVerbose($"{nameof(ReceiveHttpRequestCommand)} - {nameof(ProcessRecord)} - getting {nameof(HttpListenerRequest.InputStream)}");
                 Stream body = Context.Request.InputStream;
+                WriteVerbose($"{nameof(ReceiveHttpRequestCommand)} - {nameof(ProcessRecord)} - getting {nameof(HttpListenerRequest.ContentEncoding)}");
                 Encoding encoding = Context.Request.ContentEncoding;
+                WriteVerbose($"{nameof(ReceiveHttpRequestCommand)} - {nameof(ProcessRecord)} - getting {nameof(StreamReader)}");
                 StreamReader reader = new StreamReader(Context.Request.InputStream, encoding);
+                WriteVerbose($"{nameof(ReceiveHttpRequestCommand)} - {nameof(ProcessRecord)} - checking {nameof(HttpListenerRequest.ContentType)}");
                 if (Context.Request.ContentType == null)
                 {
                     WriteWarning("No ContentType");
                 }
+                WriteVerbose($"{nameof(ReceiveHttpRequestCommand)} - {nameof(ProcessRecord)} - reading body content");
                 String request = reader.ReadToEnd();
+                WriteVerbose($"{nameof(ReceiveHttpRequestCommand)} - {nameof(ProcessRecord)} - output");
                 WriteObject(request);
+                WriteVerbose($"{nameof(ReceiveHttpRequestCommand)} - {nameof(ProcessRecord)} - closing {nameof(HttpListenerRequest.InputStream)}");
                 Context.Request.InputStream.Close();
+                WriteVerbose($"{nameof(ReceiveHttpRequestCommand)} - {nameof(ProcessRecord)} - closing {nameof(StreamReader)}");
                 reader.Close();
             }
             else
             {
                 WriteError(new ErrorRecord(
-                    new WebException(),
+                    new WebException("No Request Body"),
                     "No Request Body",
                     ErrorCategory.InvalidData,
                     Context));

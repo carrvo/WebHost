@@ -110,7 +110,7 @@ namespace PowerShell.REST
                 else
                 {
                     WriteError(new ErrorRecord(
-                        new WebException(),
+                        new WebException("Unauthorized"),
                         "Unauthorized",
                         ErrorCategory.AuthenticationError,
                         context));
@@ -125,7 +125,7 @@ namespace PowerShell.REST
             else
             {
                 ThrowTerminatingError(new ErrorRecord(
-                    new WebException(),
+                    new WebException("Listener Not Active"),
                     "Listener Not Active",
                     ErrorCategory.ConnectionError,
                     listener));
@@ -148,7 +148,7 @@ namespace PowerShell.REST
 
         protected override void ProcessRecord()
         {
-            WriteVerbose($"{nameof(WaitHttpRequestCommand)} - {nameof(ProcessRecord)} - while {nameof(NextRequest)}");
+            WriteVerbose($"{nameof(WaitHttpRequestCommand)} - {nameof(ProcessRecord)} - while {nameof(NextRequest)}({NumberOfRequests})");
             while (NextRequest())
             {
                 WriteVerbose($"{nameof(WaitHttpRequestCommand)} - {nameof(ProcessRecord)} - {nameof(NextRequest)}");
