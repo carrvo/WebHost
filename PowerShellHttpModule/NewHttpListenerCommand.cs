@@ -93,7 +93,7 @@ namespace PowerShell.REST
             if (!HttpListener.IsSupported)
             {
                 ThrowTerminatingError(new ErrorRecord(
-                    new Exception(),
+                    new NotSupportedException("OS Not Supported"),
                     "OS Not Supported",
                     ErrorCategory.NotEnabled,
                     null));
