@@ -153,7 +153,7 @@ namespace PowerShell.REST
         private Boolean GetLimitedRequests()
         {
             WriteVerbose($"{nameof(WaitHttpRequestCommand)} - {nameof(ProcessRecord)} - remaining({NumberOfRequests})");
-            return 0 != --NumberOfRequests;
+            return 0 != NumberOfRequests--;
         }
 
         protected override void BeginProcessing()
