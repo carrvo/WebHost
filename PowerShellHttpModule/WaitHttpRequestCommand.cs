@@ -144,16 +144,28 @@ namespace PowerShell.REST
             }
         }
 
+        private Boolean GetInfiniteRequests()
+        {
+            WriteVerbose($"{nameof(WaitHttpRequestCommand)} - {nameof(ProcessRecord)} - remaining(infinite)");
+            return true;
+        }
+
+        private Boolean GetLimitedRequests()
+        {
+            WriteVerbose($"{nameof(WaitHttpRequestCommand)} - {nameof(ProcessRecord)} - remaining({NumberOfRequests})");
+            return 0 != --NumberOfRequests;
+        }
+
         protected override void BeginProcessing()
         {
             WriteVerbose($"{nameof(WaitHttpRequestCommand)} - {nameof(BeginProcessing)} - determine {nameof(NumberOfRequests)}");
             if (InfiniteRequests.IsPresent)
             {
-                NextRequest = () => true;
+                NextRequest = GetInfiniteRequests;
             }
             else
             {
-                NextRequest = () => 0 == --NumberOfRequests;
+                NextRequest = GetLimitedRequests;
             }
             WriteVerbose($"{nameof(WaitHttpRequestCommand)} - {nameof(BeginProcessing)} - end");
         }
