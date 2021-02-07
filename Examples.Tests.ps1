@@ -9,7 +9,7 @@ Describe "Http Listener" {
                 $PSScriptRoot,
                 $uri
             )
-            Import-Module $PSScriptRoot\bin\netstandard2.0\PowerShellHttpModule.dll
+            Import-Module $PSScriptRoot\PowerShellHttpModule.psd1
             try {
                 "$uri/single-accept" |
                 New-HttpListener -AuthenticationSchemes Basic |
@@ -35,7 +35,7 @@ Describe "Http Listener" {
                 $PSScriptRoot,
                 $uri
             )
-            Import-Module $PSScriptRoot\bin\netstandard2.0\PowerShellHttpModule.dll
+            Import-Module $PSScriptRoot\PowerShellHttpModule.psd1
             try {
                 "$uri/indefinite-accept" |
                 New-HttpListener -AuthenticationSchemes Basic |
@@ -64,7 +64,7 @@ Describe "Http Listener" {
                 $PSScriptRoot,
                 $uri
             )
-            Import-Module $PSScriptRoot\bin\netstandard2.0\PowerShellHttpModule.dll
+            Import-Module $PSScriptRoot\PowerShellHttpModule.psd1
             try {
                 "$uri/single-deny" |
                 New-HttpListener -AuthenticationSchemes Basic |

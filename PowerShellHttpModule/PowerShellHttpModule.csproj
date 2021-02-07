@@ -3,6 +3,14 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>PowerShell.REST</RootNamespace>
+    <Version>0.0.0</Version>
+    <Authors>carrvo</Authors>
+    <Copyright>This is free and unencumbered software released into the public domain.</Copyright>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/carrvo/PowerShell-REST</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/carrvo/PowerShell-REST.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -16,11 +24,24 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Management.Automation" Version="6.0.5" />
+    <PackageReference Include="System.Management.Automation" Version="6.0.5">
+		<GeneratePathProperty>true</GeneratePathProperty>
+    </PackageReference>
     <PackageReference Include="XmlDoc2CmdletDoc" Version="0.3.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="copy $(SolutionDir)\Examples.Tests.ps1 $(OutDir)&#xD;&#xA;copy $(SolutionDir)\$(ProjectName).psd1 $(OutDir)" />
+  </Target>
 
 </Project>
