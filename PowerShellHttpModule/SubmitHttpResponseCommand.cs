@@ -12,57 +12,47 @@ namespace PowerShell.REST
     /// <example>
     ///     <para>Submits Single Response</para>
     ///     <code>
-    ///     Start-Job -Name "single response" -ScriptBlock {
-    ///         try {
-    ///             New-HttpListener $uri |
-    ///                 Start-HttpListener |
-    ///                 Wait-HttpRequest -Count 1 |
-    ///                 ForEach-Object {
-    ///                     $request = $_ | Receive-HttpRequest | ConvertFrom-Json
-    ///                     @{Message="Hello $($request.Name)"} |
-    ///                         ConvertTo-Json | Submit-HttpResponse -Request $_
-    ///             }
-    ///         } finally {
-    ///             Get-HttpListener | Stop-HttpListener
+    ///     try {
+    ///         'http://localhost/api' |
+    ///         New-HttpListener -AuthenticationSchemes Basic |
+    ///             Start-HttpListener |
+    ///             Wait-HttpRequest -Count 1 |
+    ///             ForEach-Object {
+    ///                 $request = $_ | Receive-HttpRequest | ConvertFrom-Json
+    ///                 @{Message="Hello $($request.Name)"} |
+    ///                     ConvertTo-Json | Submit-HttpResponse -Request $_
     ///         }
+    ///     } finally {
+    ///         Get-HttpListener | Stop-HttpListener
     ///     }
+    ///     </code>
+    ///     <para>Call from *another* shell:</para>
+    ///     <code>
+    ///     $cred = Get-Credential -Message "For PowerShell-REST" -UserName "$ENV:COMPUTERNAME\$ENV:USERNAME" -Title "PowerShell-REST"
+    ///     Invoke-RestMethod -Method Post -Uri 'http://localhost/api' -Body $(@{Name='test'} | ConvertTo-Json) -ContentType 'application/json' -Authentication Basic -Credential $cred -AllowUnencryptedAuthentication
     ///     </code>
     /// </example>
     /// <example>
     ///     <para>Submits Indefinite Responses</para>
     ///     <code>
-    ///     Start-Job -Name "indefinte responses" -ScriptBlock {
-    ///         try {
-    ///             New-HttpListener $uri |
-    ///                 Start-HttpListener |
-    ///                 Wait-HttpRequest -Infinity |
-    ///                 ForEach-Object {
-    ///                     $request = $_ | Receive-HttpRequest | ConvertFrom-Json
-    ///                     @{Message="Hello $($request.Name)"} |
-    ///                         ConvertToJson | Submit-HttpResponse -Request $_
-    ///                 }
-    ///         } finally {
-    ///             Get-HttpListener | Stop-HttpListener
-    ///         }
+    ///     try {
+    ///         'http://localhost/api' |
+    ///         New-HttpListener -AuthenticationSchemes Basic |
+    ///             Start-HttpListener |
+    ///             Wait-HttpRequest -Infinity |
+    ///             ForEach-Object {
+    ///                 $request = $_ | Receive-HttpRequest | ConvertFrom-Json
+    ///                 @{Message="Hello $($request.Name)"} |
+    ///                     ConvertToJson | Submit-HttpResponse -Request $_
+    ///             }
+    ///     } finally {
+    ///         Get-HttpListener | Stop-HttpListener
     ///     }
     ///     </code>
-    /// </example>
-    /// <example>
-    ///     <para>Denies Single Response</para>
+    ///     <para>Call from *another* shell:</para>
     ///     <code>
-    ///     Start-Job -Name "single response" -ScriptBlock {
-    ///         try {
-    ///             New-HttpListener $uri |
-    ///                 Start-HttpListener |
-    ///                 Wait-HttpRequest -Count 1 |
-    ///                 ForEach-Object {
-    ///                     $request = $_ | Receive-HttpRequest | ConvertFrom-Json
-    ///                     Deny-HttpResponse -Request $_
-    ///                 }
-    ///         } finally {
-    ///             Get-HttpListener | Stop-HttpListener
-    ///         }
-    ///     }
+    ///     $cred = Get-Credential -Message "For PowerShell-REST" -UserName "$ENV:COMPUTERNAME\$ENV:USERNAME" -Title "PowerShell-REST"
+    ///     Invoke-RestMethod -Method Post -Uri 'http://localhost/api' -Body $(@{Name='test'} | ConvertTo-Json) -ContentType 'application/json' -Authentication Basic -Credential $cred -AllowUnencryptedAuthentication
     ///     </code>
     /// </example>
     /// </summary>
