@@ -114,7 +114,7 @@ namespace PowerShell.REST
                 WriteVerbose($"{nameof(WaitHttpRequestCommand)} - {nameof(ProcessRecord)} - waiting for request");
                 HttpListenerContext context = listener.GetContext();
                 WriteVerbose($"{nameof(WaitHttpRequestCommand)} - {nameof(ProcessRecord)} - checking {nameof(HttpListenerRequest.IsAuthenticated)}");
-                if (context.Request.IsAuthenticated)
+                if (context.Request.IsAuthenticated || listener.AuthenticationSchemes.HasFlag(AuthenticationSchemes.Anonymous))
                 {
                     WriteVerbose($"{nameof(WaitHttpRequestCommand)} - {nameof(ProcessRecord)} - output");
                     WriteObject(context);
