@@ -27,10 +27,6 @@
     <PackageReference Include="System.Management.Automation" Version="6.0.5">
 		<GeneratePathProperty>true</GeneratePathProperty>
     </PackageReference>
-    <PackageReference Include="XmlDoc2CmdletDoc" Version="0.3.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
@@ -41,7 +37,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="copy $(SolutionDir)\Examples.Tests.ps1 $(OutDir)&#xD;&#xA;copy $(SolutionDir)\$(ProjectName).psd1 $(OutDir)" />
+    <Exec Command="copy $(SolutionDir)\Examples.Tests.ps1 $(OutDir)&#xD;&#xA;copy $(SolutionDir)\RequireElevatedPrivileges.ps1 $(OutDir)&#xD;&#xA;copy $(SolutionDir)\$(ProjectName).psd1 $(OutDir)" />
   </Target>
 
 </Project>
