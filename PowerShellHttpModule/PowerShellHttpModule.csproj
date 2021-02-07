@@ -27,6 +27,10 @@
     <PackageReference Include="System.Management.Automation" Version="6.0.5">
 		<GeneratePathProperty>true</GeneratePathProperty>
     </PackageReference>
+    <PackageReference Include="XmlDoc2CmdletDoc" Version="0.3.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
