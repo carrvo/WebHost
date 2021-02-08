@@ -5,6 +5,12 @@ For writing a REST API in PowerShell
 
 ## Installation
 
+The package can be found on [PSGallery](https://www.powershellgallery.com/packages/PowerShellHttpModule/).
+
+```powershell
+Install-Module -Name PowerShellHttpModule
+```
+
 ## First API
 
 ```powershell
