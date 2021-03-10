@@ -32,7 +32,7 @@ namespace PowerShell.REST
     ///     </code>
     ///     <para>Call from *another* shell:</para>
     ///     <code>
-    ///     $cred = Get-Credential -Message "For PowerShell-REST" -UserName "$ENV:COMPUTERNAME\$ENV:USERNAME" -Title "PowerShell-REST"
+    ///     $cred = Get-Credential -Message "For PowerShell-REST" -UserName "$ENV:COMPUTERNAME\$ENV:USERNAME"
     ///     Invoke-RestMethod -Method Post -Uri 'http://localhost/api' -Body $(@{Name='test'} | ConvertTo-Json) -ContentType 'application/json' -Authentication Basic -Credential $cred -AllowUnencryptedAuthentication
     ///     </code>
     /// </example>
@@ -55,7 +55,7 @@ namespace PowerShell.REST
     ///     </code>
     ///     <para>Call from *another* shell:</para>
     ///     <code>
-    ///     $cred = Get-Credential -Message "For PowerShell-REST" -UserName "$ENV:COMPUTERNAME\$ENV:USERNAME" -Title "PowerShell-REST"
+    ///     $cred = Get-Credential -Message "For PowerShell-REST" -UserName "$ENV:COMPUTERNAME\$ENV:USERNAME"
     ///     Invoke-RestMethod -Method Post -Uri 'http://localhost/api' -Body $(@{Name='test'} | ConvertTo-Json) -ContentType 'application/json' -Authentication Basic -Credential $cred -AllowUnencryptedAuthentication
     ///     </code>
     /// </example>
@@ -77,7 +77,7 @@ namespace PowerShell.REST
     ///     </code>
     ///     <para>Call from *another* shell:</para>
     ///     <code>
-    ///     $cred = Get-Credential -Message "For PowerShell-REST" -UserName "$ENV:COMPUTERNAME\$ENV:USERNAME" -Title "PowerShell-REST"
+    ///     $cred = Get-Credential -Message "For PowerShell-REST" -UserName "$ENV:COMPUTERNAME\$ENV:USERNAME"
     ///     Invoke-RestMethod -Method Post -Uri 'http://localhost/api' -Body $(@{Name='test'} | ConvertTo-Json) -ContentType 'application/json' -Authentication Basic -Credential $cred -AllowUnencryptedAuthentication
     ///     </code>
     /// </example>
