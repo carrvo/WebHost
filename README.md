@@ -41,5 +41,21 @@ $cred = Get-Credential -Message "For PowerShell-REST" -UserName "$ENV:COMPUTERNA
 Invoke-RestMethod -Method Post -Uri 'http://localhost/api' -Body $(@{Name='test'} | ConvertTo-Json) -ContentType 'application/json' -Authentication Basic -Credential $cred -AllowUnencryptedAuthentication
 ```
 
+## Troubleshooting Your API
+
+Call your business logic interactively:
+```powershell
+$listener = 'http://localhost/api' |
+    New-HttpListener -AuthenticationSchemes Basic |
+    Start-HttpListener
+$connection = $listener | Wait-HttpRequest -Count 1 # only want the one you are debugging
+# call the API while this console waits
+$request = $connection | Receive-HttpRequest | ConvertFrom-Json
+# business logic / troubleshooting here
+$response = @{Message="Hello $($request.Name)"}
+$response | ConvertTo-Json | Submit-HttpResponse -Request $connection
+$listener | Stop-HttpListener
+```
+
 # References
 - Inspired by https://www.powershellgallery.com/packages/HttpListener/1.0.2/Content/HTTPListener.psm1
