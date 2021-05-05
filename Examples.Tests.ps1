@@ -16,7 +16,7 @@ Describe "Http Listener" {
                     Start-HttpListener |
                     Wait-HttpRequest -Count 1 |
                     ForEach-Object {
-                        $request = $_ | Receive-HttpRequest | ConvertFrom-Json
+                        $request = $_ | Receive-HttpRequestBody | ConvertFrom-Json
                         @{Message="Hello $($request.Name)"} |
                             ConvertTo-Json | Submit-HttpResponse -Request $_
                     }
@@ -43,7 +43,7 @@ Describe "Http Listener" {
                     Start-HttpListener |
                     Wait-HttpRequest -Infinity |
                     ForEach-Object {
-                        $request = $_ | Receive-HttpRequest | ConvertFrom-Json
+                        $request = $_ | Receive-HttpRequestBody | ConvertFrom-Json
                         @{Message="Hello $($request.Name)"} |
                             ConvertTo-Json | Submit-HttpResponse -Request $_
                     }
@@ -73,7 +73,7 @@ Describe "Http Listener" {
                     Start-HttpListener |
                     Wait-HttpRequest -Count 1 |
                     ForEach-Object {
-                        $request = $_ | Receive-HttpRequest | ConvertFrom-Json
+                        $request = $_ | Receive-HttpRequestBody | ConvertFrom-Json
                         Deny-HttpResponse -Request $_
                     }
             } finally {
@@ -98,7 +98,7 @@ Describe "Http Listener" {
                     Start-HttpListener |
                     Wait-HttpRequest -Count 1 |
                     ForEach-Object {
-                        $request = $_ | Receive-HttpRequest | ConvertFrom-Json
+                        $request = $_ | Receive-HttpRequestBody | ConvertFrom-Json
                         @{Message="Hello $($request.Name)"} |
                             ConvertTo-Json | Submit-HttpResponse -Request $_
                     }

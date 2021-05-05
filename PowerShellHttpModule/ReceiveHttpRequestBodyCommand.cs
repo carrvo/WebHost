@@ -22,7 +22,7 @@ namespace PowerShell.REST
     ///             Start-HttpListener |
     ///             Wait-HttpRequest -Count 1 |
     ///             ForEach-Object {
-    ///                 $request = $_ | Receive-HttpRequest | ConvertFrom-Json
+    ///                 $request = $_ | Receive-HttpRequestBody | ConvertFrom-Json
     ///                 @{Message="Hello $($request.Name)"} |
     ///                     ConvertTo-Json | Submit-HttpResponse -Request $_
     ///         }
@@ -45,7 +45,7 @@ namespace PowerShell.REST
     ///             Start-HttpListener |
     ///             Wait-HttpRequest -Infinity |
     ///             ForEach-Object {
-    ///                 $request = $_ | Receive-HttpRequest | ConvertFrom-Json
+    ///                 $request = $_ | Receive-HttpRequestBody | ConvertFrom-Json
     ///                 @{Message="Hello $($request.Name)"} |
     ///                     ConvertToJson | Submit-HttpResponse -Request $_
     ///             }
@@ -68,7 +68,7 @@ namespace PowerShell.REST
     ///             Start-HttpListener |
     ///             Wait-HttpRequest -Count 1 |
     ///             ForEach-Object {
-    ///                 $request = $_ | Receive-HttpRequest | ConvertFrom-Json
+    ///                 $request = $_ | Receive-HttpRequestBody | ConvertFrom-Json
     ///                 Deny-HttpResponse -Request $_
     ///             }
     ///     } finally {
@@ -84,7 +84,7 @@ namespace PowerShell.REST
     /// </summary>
     [Cmdlet(VerbsCommunications.Receive, "HttpRequest")]
     [OutputType(typeof(String))]
-    public sealed class ReceiveHttpRequestCommand : Cmdlet
+    public sealed class ReceiveHttpRequestBodyCommand : Cmdlet
     {
         /// <summary>
         /// <para type="description">The <see cref="HttpListenerContext"/> that corresponds to the client request.</para>
@@ -95,27 +95,27 @@ namespace PowerShell.REST
 
         protected override void ProcessRecord()
         {
-            WriteVerbose($"{nameof(ReceiveHttpRequestCommand)} - {nameof(ProcessRecord)} - checking {nameof(HttpListenerRequest.HasEntityBody)}");
+            WriteVerbose($"{nameof(ReceiveHttpRequestBodyCommand)} - {nameof(ProcessRecord)} - checking {nameof(HttpListenerRequest.HasEntityBody)}");
             if (Context.Request != null && Context.Request.HasEntityBody)
             {
-                WriteVerbose($"{nameof(ReceiveHttpRequestCommand)} - {nameof(ProcessRecord)} - getting {nameof(HttpListenerRequest.InputStream)}");
+                WriteVerbose($"{nameof(ReceiveHttpRequestBodyCommand)} - {nameof(ProcessRecord)} - getting {nameof(HttpListenerRequest.InputStream)}");
                 Stream body = Context.Request.InputStream;
-                WriteVerbose($"{nameof(ReceiveHttpRequestCommand)} - {nameof(ProcessRecord)} - getting {nameof(HttpListenerRequest.ContentEncoding)}");
+                WriteVerbose($"{nameof(ReceiveHttpRequestBodyCommand)} - {nameof(ProcessRecord)} - getting {nameof(HttpListenerRequest.ContentEncoding)}");
                 Encoding encoding = Context.Request.ContentEncoding;
-                WriteVerbose($"{nameof(ReceiveHttpRequestCommand)} - {nameof(ProcessRecord)} - getting {nameof(StreamReader)}");
+                WriteVerbose($"{nameof(ReceiveHttpRequestBodyCommand)} - {nameof(ProcessRecord)} - getting {nameof(StreamReader)}");
                 StreamReader reader = new StreamReader(Context.Request.InputStream, encoding);
-                WriteVerbose($"{nameof(ReceiveHttpRequestCommand)} - {nameof(ProcessRecord)} - checking {nameof(HttpListenerRequest.ContentType)}");
+                WriteVerbose($"{nameof(ReceiveHttpRequestBodyCommand)} - {nameof(ProcessRecord)} - checking {nameof(HttpListenerRequest.ContentType)}");
                 if (Context.Request.ContentType == null)
                 {
                     WriteWarning("No ContentType");
                 }
-                WriteVerbose($"{nameof(ReceiveHttpRequestCommand)} - {nameof(ProcessRecord)} - reading body content");
+                WriteVerbose($"{nameof(ReceiveHttpRequestBodyCommand)} - {nameof(ProcessRecord)} - reading body content");
                 String request = reader.ReadToEnd();
-                WriteVerbose($"{nameof(ReceiveHttpRequestCommand)} - {nameof(ProcessRecord)} - output");
+                WriteVerbose($"{nameof(ReceiveHttpRequestBodyCommand)} - {nameof(ProcessRecord)} - output");
                 WriteObject(request);
-                WriteVerbose($"{nameof(ReceiveHttpRequestCommand)} - {nameof(ProcessRecord)} - closing {nameof(HttpListenerRequest.InputStream)}");
+                WriteVerbose($"{nameof(ReceiveHttpRequestBodyCommand)} - {nameof(ProcessRecord)} - closing {nameof(HttpListenerRequest.InputStream)}");
                 Context.Request.InputStream.Close();
-                WriteVerbose($"{nameof(ReceiveHttpRequestCommand)} - {nameof(ProcessRecord)} - closing {nameof(StreamReader)}");
+                WriteVerbose($"{nameof(ReceiveHttpRequestBodyCommand)} - {nameof(ProcessRecord)} - closing {nameof(StreamReader)}");
                 reader.Close();
             }
             else

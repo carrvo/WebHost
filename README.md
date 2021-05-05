@@ -20,7 +20,7 @@ try {
     Start-HttpListener |
     Wait-HttpRequest -Count 1 | # specify how many requests or infinite
     ForEach-Object {
-        $request = $_ | Receive-HttpRequest | ConvertFrom-Json
+        $request = $_ | Receive-HttpRequestBody | ConvertFrom-Json
         # all your business logic
         # including constructing an object or hashtable to send the client
         $response = @{Message="Hello $($request.Name)"}
