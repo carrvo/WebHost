@@ -112,4 +112,31 @@ Describe "Http Listener" {
             Should Be 'Hello test'
         Get-Job -Name "Anonymous response" | Stop-Job | Remove-Job
     }
+    It "does not require a body" {
+        Start-Job -Name "no body" -ScriptBlock {
+            Param(
+                $PSScriptRoot,
+                $uri
+            )
+            Import-Module $PSScriptRoot\PowerShellHttpModule.psd1
+            try {
+                "$uri/no-body" |
+                New-HttpListener -AuthenticationSchemes Basic |
+                    Start-HttpListener |
+                    Wait-HttpRequest -Count 1 |
+                    ForEach-Object {
+                        $name = $_.Request.QueryString.Get('Name')
+                        @{Message="Hello $($name)"} |
+                            ConvertTo-Json | Submit-HttpResponse -Request $_
+                    }
+            } finally {
+                Get-HttpListener | Stop-HttpListener
+            }
+        } -ArgumentList $PSScriptRoot,$uri
+        Start-Sleep -Seconds 5 # let the job start listening
+        Invoke-RestMethod -Method Get -Uri "$uri/no-body?Name=test" -Authentication Basic -Credential $cred -AllowUnencryptedAuthentication |
+            Select-Object -ExpandProperty Message |
+            Should Be 'Hello test'
+        Get-Job -Name "no body" | Stop-Job | Remove-Job
+    }
 }
