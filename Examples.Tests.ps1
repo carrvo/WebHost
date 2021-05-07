@@ -82,7 +82,7 @@ Describe "Http Listener" {
         } -ArgumentList $PSScriptRoot,$uri
         Start-Sleep -Seconds 5 # let the job start listening
         { Invoke-RestMethod -Method Post -Uri "$uri/single-deny" -Body $(@{Name='test'} | ConvertTo-Json) -ContentType 'application/json' -Authentication Basic -Credential $cred -AllowUnencryptedAuthentication -ErrorAction Stop } |
-            Should Throw
+            Should Throw 'An error occurred while sending the request.'
         Get-Job -Name "deny response" | Stop-Job | Remove-Job
     }
     It "supports Anonymous" {
@@ -182,7 +182,7 @@ Describe "Http Listener" {
             Select-Object -ExpandProperty Message |
             Should Be 'Goodbye test'
         { Invoke-RestMethod -Method Post -Uri "$uri/multiple-endpoints/not-valid" -Body $(@{Name='test'} | ConvertTo-Json) -ContentType 'application/json' -Authentication Basic -Credential $cred -AllowUnencryptedAuthentication -ErrorAction Stop } |
-            Should Throw
+            Should Throw 'An error occurred while sending the request.'
         Get-Job -Name "multiple endpoints" | Stop-Job | Remove-Job
     }
 }
