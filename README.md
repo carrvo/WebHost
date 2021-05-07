@@ -1,5 +1,10 @@
 # PowerShell-REST
-For writing a REST API in PowerShell
+For writing a REST API in PowerShell.
+
+This is better suited for prototyping and troubleshooting an API and is **not** recommeded for production code.
+
+DISCLAIMER: The security is left up to the scripter writing the API *and not this library*.
+The only security this library provides is calling `$connection.Request.IsAuthenticated` when not passed `Anonymous`.
 
 # Quick Start
 
@@ -18,16 +23,16 @@ try {
     'http://localhost/api' |
     New-HttpListener -AuthenticationSchemes Basic |
     Start-HttpListener |
-    Wait-HttpRequest -Count 1 | # specify how many requests or infinite
+    Wait-HttpRequest -Count 1 -PipelineVariable $connection | # specify how many requests or infinite
     ForEach-Object {
-        $request = $_ | Receive-HttpRequestBody | ConvertFrom-Json
+        $request = $connection | Receive-HttpRequestBody | ConvertFrom-Json
         # all your business logic
         # including constructing an object or hashtable to send the client
         $response = @{Message="Hello $($request.Name)"}
         # send the object or hashtable to the client
-        $response | ConvertTo-Json | Submit-HttpResponse -Request $_
+        $response | ConvertTo-Json | Submit-HttpResponse -Request $connection
         # or drop the connection
-        #Deny-HttpResponse -Request $_
+        #Deny-HttpResponse -Request $connection
     }
 } finally {
     Get-HttpListener | Stop-HttpListener
