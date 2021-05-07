@@ -12,7 +12,7 @@
 RootModule = 'PowerShellHttpModule.dll'
 
 # Version number of this module.
-ModuleVersion = '0.1.2'
+ModuleVersion = '0.2.0'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -95,7 +95,7 @@ PrivateData = @{
     PSData = @{
 
         # Tags applied to this module. These help with module discovery in online galleries.
-        Tags = @('HTTP','HTTPS')
+        Tags = @('HTTP','HTTPS','REST')
 
         # A URL to the license for this module.
         LicenseUri = 'https://unlicense.org/'
