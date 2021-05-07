@@ -1,7 +1,7 @@
 Describe "Http Listener" {
     BeforeAll {
         $uri = 'http://localhost/api'
-        $cred = Get-Credential -Message "For PowerShell-REST" -UserName "$ENV:COMPUTERNAME\$ENV:USERNAME" -Title "PowerShell-REST"
+        $cred = Get-Credential -Message "For PowerShell-REST" -UserName "$ENV:COMPUTERNAME\$ENV:USERNAME"
     }
     It "submits a single response" {
         Start-Job -Name "single response" -ScriptBlock {
