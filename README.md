@@ -6,6 +6,8 @@ This is better suited for prototyping and troubleshooting an API and is **not** 
 DISCLAIMER: The security is left up to the scripter writing the API *and not this library*.
 The only security this library provides is calling `$connection.Request.IsAuthenticated` when not passed `Anonymous`.
 
+NOTE: This library will make it tempting to write REST*-like* over REST*ful* APIs. See "API Styles" for more information.
+
 # Quick Start
 
 ## Installation
@@ -64,3 +66,4 @@ $listener | Stop-HttpListener
 
 # References
 - Inspired by https://www.powershellgallery.com/packages/HttpListener/1.0.2/Content/HTTPListener.psm1
+- [API Styles](https://api-university.com/blog/styles-for-apis-soap-rest-and-rpc/)
