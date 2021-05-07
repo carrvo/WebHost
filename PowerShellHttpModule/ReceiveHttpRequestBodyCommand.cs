@@ -82,7 +82,7 @@ namespace PowerShell.REST
     ///     </code>
     /// </example>
     /// </summary>
-    [Cmdlet(VerbsCommunications.Receive, "HttpRequest")]
+    [Cmdlet(VerbsCommunications.Receive, "HttpRequestBody")]
     [OutputType(typeof(String))]
     public sealed class ReceiveHttpRequestBodyCommand : Cmdlet
     {
