@@ -38,8 +38,17 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Examples.Tests.ps1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="PowerShellHttpModule.psd1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="copy $(SolutionDir)\LICENSE.txt $(OutDir)&#xD;&#xA;copy $(SolutionDir)\Examples.Tests.ps1 $(OutDir)&#xD;&#xA;copy $(SolutionDir)\RequireElevatedPrivileges.ps1 $(OutDir)&#xD;&#xA;copy $(SolutionDir)\$(ProjectName).psd1 $(OutDir)" />
+    <Exec Command="copy $(SolutionDir)\LICENSE.txt $(OutDir)&#xD;&#xA;copy $(SolutionDir)\RequireElevatedPrivileges.ps1 $(OutDir)" />
   </Target>
 
 </Project>

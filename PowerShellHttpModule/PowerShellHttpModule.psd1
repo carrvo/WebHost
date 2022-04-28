@@ -12,7 +12,7 @@
 RootModule = 'PowerShellHttpModule.dll'
 
 # Version number of this module.
-ModuleVersion = '0.2.0'
+ModuleVersion = '0.2.1'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -95,13 +95,13 @@ PrivateData = @{
     PSData = @{
 
         # Tags applied to this module. These help with module discovery in online galleries.
-        Tags = @('HTTP','HTTPS','REST')
+        Tags = @('HTTP','HTTPS','REST', 'HttpServer')
 
         # A URL to the license for this module.
         LicenseUri = 'https://unlicense.org/'
 
         # A URL to the main website for this project.
-        ProjectUri = 'https://github.com/carrvo/PowerShell-REST'
+        ProjectUri = 'https://github.com/carrvo/WebHost'
 
         # A URL to an icon representing this module.
         # IconUri = ''
