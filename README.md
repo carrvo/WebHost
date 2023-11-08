@@ -7,3 +7,4 @@ DISCLAIMER: The security is left up to the scripter writing the API *and not thi
 
 ## Libraries
 - [PowerShellHttpModule](./PowerShellHttpModule/README.md)
+- [PowerShellUDPModule](./PowerShellUDPModule/README.md)
