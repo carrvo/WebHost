@@ -66,8 +66,7 @@ Describe "UDP Listener" {
     It "does not require a body" {
         Start-Job -Name "no body" -ScriptBlock {
             Param(
-                $PSScriptRoot,
-                $uri
+                $PSScriptRoot
             )
             Import-Module $PSScriptRoot\PowerShellUDPModule.psd1
             try {
@@ -80,7 +79,7 @@ Describe "UDP Listener" {
             } finally {
                 Get-UdpListener | Stop-UdpListener
             }
-        } -ArgumentList $PSScriptRoot,$uri
+        } -ArgumentList $PSScriptRoot
         Start-Sleep -Seconds 5 # let the job start listening
         Send-UdpRequest -Port 11002 -Body $(@{Name='test'} | ConvertTo-Json)
         Start-Sleep -Seconds 1 # let the job output
@@ -94,8 +93,7 @@ Describe "UDP Listener" {
     It "can respond to a request" {
         Start-Job -Name "response" -ScriptBlock {
             Param(
-                $PSScriptRoot,
-                $uri
+                $PSScriptRoot
             )
             Import-Module $PSScriptRoot\PowerShellUDPModule.psd1
             try {
@@ -109,13 +107,25 @@ Describe "UDP Listener" {
             } finally {
                 Get-UdpListener | Stop-UdpListener
             }
-        } -ArgumentList $PSScriptRoot,$uri
-        Start-Sleep -Seconds 5 # let the job start listening
-        Send-UdpRequest -Port 11003 -Body $(@{Name='test'} | ConvertTo-Json) |
-			Wait-UdpRequest -Count 1 |
-			Select-Object -ExpandProperty UTF8Payload
+        } -ArgumentList $PSScriptRoot
+		Start-Job -Name "client" -ScriptBlock {
+            Param(
+                $PSScriptRoot
+            )
+            Import-Module $PSScriptRoot\PowerShellUDPModule.psd1
+			Start-Sleep -Seconds 5 # let the job start listening
+			Send-UdpRequest -Port 11003 -Body $(@{Name='test'} | ConvertTo-Json) |
+				Wait-UdpRequest -Count 1 |
+				Select-Object -ExpandProperty UTF8Payload |
+				ConvertFrom-Json |
+				Write-Output -NoEnumerate
+        } -ArgumentList $PSScriptRoot
+		Start-Sleep -Seconds 15 # let the job do work
+		Get-Job -Name "client" |
+			Receive-Job |
             Select-Object -ExpandProperty Message |
             Should Be 'Hello test'
+        Get-Job -Name "client" | Stop-Job -PassThru | Remove-Job
         Get-Job -Name "response" | Stop-Job -PassThru | Remove-Job
     }
 }

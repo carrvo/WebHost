@@ -33,7 +33,7 @@ namespace PowerShell.UDP
         /// </summary>
         [Parameter(Mandatory = true, Position = 0, ParameterSetName = "IPEndPoint-Byte")]
         [Parameter(Mandatory = true, Position = 0, ParameterSetName = "IPEndPoint-UTF8")]
-        IPEndPoint ServerIpEndPoint { get; set; }
+        public IPEndPoint ServerIpEndPoint { get; set; }
 
         /// <summary>
         /// <para type="description">The raw data to send.</para>
