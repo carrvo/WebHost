@@ -113,7 +113,8 @@ Describe "UDP Listener" {
         Start-Sleep -Seconds 5 # let the job start listening
         Send-UdpRequest -Port 11003 -Body $(@{Name='test'} | ConvertTo-Json) |
 			Wait-UdpRequest -Count 1 |
-			Select-Object -ExpandProperty UTF8Payload
+			Select-Object -ExpandProperty UTF8Payload |
+			ConvertFrom-Json |
             Select-Object -ExpandProperty Message |
             Should Be 'Hello test'
         Get-Job -Name "response" | Stop-Job -PassThru | Remove-Job
